@@ -1,0 +1,20 @@
+{
+  "name": "techstore",
+  "version": "1.0.0",
+  "description": "purchase tech items on this website",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ts-money/TechStore.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ts-money/TechStore/issues"
+  },
+  "homepage": "https://github.com/Ts-money/TechStore#readme"
+}
