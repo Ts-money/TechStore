@@ -40,7 +40,7 @@ function Register(props) {
     return (
         // Work owais gotta do.
         <div className="container">
-            
+            <h1>THIS WORKED THIS WORKED THIS WORKED</h1>
         </div>
     );
 
