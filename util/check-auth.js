@@ -3,11 +3,10 @@ const { AuthenticationError } = require('apollo-server');
 const jwt = require('jsonwebtoken');
 const { SECRET_KEY } = require('../config');
 
+// Checks a authentication token and returns which user's token it is!
 module.exports = (context) => {
-  // context = { ... headers }
   const authHeader = context.req.headers.authorization;
   if (authHeader) {
-    // Bearer ....
     const token = authHeader.split('Bearer ')[1];
     if (token) {
       try {

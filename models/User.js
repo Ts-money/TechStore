@@ -1,3 +1,4 @@
+// User Schema for MongoDB
 const { model, Schema } = require('mongoose');
 
 const userSchema = new Schema({

@@ -1,3 +1,4 @@
+// Validates all information involved in a register event.
 module.exports.validateRegisterInput = (
   username,
   email,
@@ -28,6 +29,7 @@ module.exports.validateRegisterInput = (
   };
 };
 
+// Validates all information in a login event!
 module.exports.validateLoginInput = (username, password) => {
   const errors = {};
   if (username.trim() === '') {
