@@ -61,7 +61,7 @@ function AddToCartButton({user, productId, callback}) {
     // Renders purchase button
     return (
         <>
-            <CustomPopup content={'Purchase Product'}>
+            <CustomPopup content={'Add To Cart'}>
                 <Button
                     as="div"
                     color="green"
