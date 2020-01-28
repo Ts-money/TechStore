@@ -43,7 +43,7 @@ const server = new ApolloServer({
 
 // Connects to MongoDB and then starts Apollo Server
 mongoose
-    .connect(process.env.MONGODB_URI || "mongodb://localhost/techstore", {useNewUrlParser: true})
+    .connect("mongodb://heroku_qd1s2dl8:9tokrjnq2uemhmhtrkr9b4qk7p@ds161487.mlab.com:61487/heroku_qd1s2dl8", {useNewUrlParser: true})
     .then(() => {
         console.log('MongoDB Connected');
         return server.listen({port: PORT_APOLLO});
