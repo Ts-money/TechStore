@@ -23,8 +23,7 @@ function generateToken(id, email, username, cartItems) {
     );
 }
 
-// Purchase button
-function PurchaseButton({ user, productId, callback }) {
+function DeleteButtonCart({ user, productId, callback, state }) {
 
     const [errors, setErrors] = useState({});
 
@@ -33,16 +32,20 @@ function PurchaseButton({ user, productId, callback }) {
     // Variables used to open the confirm popup.
     const [confirmOpen, setConfirmOpen] = useState(false);
 
-    const mutation = ADD_TO_CART_MUTATION;
+    const mutation = REMOVE_FROM_CART_MUTATION;
 
-    const [addToCartMutation] = useMutation(mutation, {
+    async function updateToken(token) {
+        return await localStorage.setItem('jwtToken', token);
+    }
+
+    const [removeFromCartMutation] = useMutation(mutation, {
         update(proxy) {
-            const data = proxy.readQuery({
-                query: FETCH_PRODUCTS_QUERY
-            });
-            proxy.writeQuery({ query: FETCH_PRODUCTS_QUERY, data });
+            console.log(proxy);
+            user.cartItems = user.cartItems.filter((p) => p.id === productId);
             var token = generateToken(user.id, user.email, user.username, user.cartItems);
-            localStorage.setItem('jwtToken', token);
+            console.log(token);
+            updateToken(token);
+            window.location.reload(false);
             if (callback) callback();
         },
         variables: {
@@ -51,29 +54,31 @@ function PurchaseButton({ user, productId, callback }) {
         }
     });
 
-    function addToCart() {
+    async function removeFromCart() {
         setConfirmOpen(false);
-        user.cartItems.push(productId);
-        addToCartMutation();
+        await removeFromCartMutation();
+        console.log(productId);
+        console.log(user.cartItems);
+        console.log(user.cartItems);
     }
 
     // Renders purchase button
     return (
         <>
-            <MyPopup content={'Purchase Product'}>
+            <MyPopup content={'Remove From Cart'}>
                 <Button
                     as="div"
-                    color="green"
-                    floated="left"
+                    color="red"
+                    floated="right"
                     onClick={() => setConfirmOpen(true)}
                 >
-                    <Icon name="cart" style={{ margin: 0 }}></Icon>
+                    <Icon name="trash" style={{ margin: 0 }}></Icon>
                 </Button>
             </MyPopup>
             <Confirm
                 open={confirmOpen}
                 onCancel={() => setConfirmOpen(false)}
-                onConfirm={addToCart}
+                onConfirm={removeFromCart}
             />
             {console.log(errors)}
         </>
@@ -81,10 +86,10 @@ function PurchaseButton({ user, productId, callback }) {
 
 }
 
-const ADD_TO_CART_MUTATION = gql`
-    mutation addToCart($userId: ID!, $productId: ID!) {
-        addToCart(userId: $userId, productId: $productId)
+const REMOVE_FROM_CART_MUTATION = gql`
+    mutation removeFromCart($userId: ID!, $productId: ID!) {
+        removeFromCart(userId: $userId, productId: $productId)
     }
 `;
 
-export default PurchaseButton;
+export default DeleteButtonCart;

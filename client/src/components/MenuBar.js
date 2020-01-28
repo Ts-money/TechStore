@@ -20,6 +20,12 @@ function MenuBar() {
       <Menu.Item name={user.username} active as={Link} to="/" />
 
       <Menu.Menu position="right">
+      <Menu.Item
+          name="cart"
+          onClick={handleItemClick}
+          as={Link}
+          to="/cart"
+        />
         <Menu.Item name="logout" onClick={logout} />
       </Menu.Menu>
     </Menu>

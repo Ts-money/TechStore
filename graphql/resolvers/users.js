@@ -6,16 +6,23 @@ const {
   validateRegisterInput,
   validateLoginInput
 } = require('../../util/validators');
-const { SECRET_KEY } = require('../../config');
+const { SECRET_KEY } = require('../../client/src/config');
 const User = require('../../models/User');
 
 // Generates a unique token for a user which expires in 1 hour.
 function generateToken(user) {
+  var cartItems = user.cartItems;
+  if (cartItems === undefined || cartItems === null) {
+    cartItems = [];
+    user.cartItems = [];
+    user.save();
+  }
   return jwt.sign(
     {
       id: user.id,
       email: user.email,
-      username: user.username
+      username: user.username,
+      cartItems: cartItems
     },
     SECRET_KEY,
     { expiresIn: '1h' }
@@ -24,6 +31,28 @@ function generateToken(user) {
 
 // Login and Register methods
 module.exports = {
+  Query: {
+    async getUsers() {
+      try {
+        const users = await User.find().sort({ createdAt: -1 });
+        return users;
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+    async getUser(_, { userId }) {
+      try {
+        const user = await User.findById(userId);
+        if (user) {
+          return user;
+        } else {
+          throw new Error('User not found');
+        }
+      } catch (err) {
+        throw new Error(err);
+      }
+    }
+  },
   Mutation: {
     // Login method requires username and password and then validates the credentials
     async login(_, { username, password }) {
@@ -44,6 +73,11 @@ module.exports = {
       if (!match) {
         errors.general = 'Wrong crendetials';
         throw new UserInputError('Wrong crendetials', { errors });
+      }
+
+      if (user.cartItems === undefined || user.cartItems === null) {
+        user.cartItems = [];
+        user = await user.save();
       }
 
       const token = generateToken(user);
@@ -87,7 +121,8 @@ module.exports = {
         email,
         username,
         password,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        cartItems: []
       });
 
       const res = await newUser.save();

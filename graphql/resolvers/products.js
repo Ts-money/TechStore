@@ -3,6 +3,8 @@ const { AuthenticationError } = require('apollo-server');
 const Product = require('../../models/Product');
 const checkAuth = require('../../util/check-auth');
 
+const User = require('../../models/User');
+
 module.exports = {
     Query: {
         // Gets all available products
@@ -67,11 +69,22 @@ module.exports = {
                 const product = await Product.findById(productId);
                 if (user.username === product.username) {
                     await product.delete();
+                    const users = await User.find().sort({ createdAt: -1 });
+                    users.array.forEach(user => {
+                        if (user.cartItems !== undefined || user.cartItems !== null) {
+                            user.cartItems = user.cartItems.filter((p) => p.id === product.id);
+                            user = user.save();
+                        } else {
+                            user.cartItems = [];
+                            user = user.save();
+                        }
+                    });
                     return 'Product successfully deleted!';
                 } else {
                     new AuthenticationError('You did not create this product...');
                 }
             } catch (err) {
+                console.log(err);
                 throw new Error(err);
             }
         }

@@ -47,6 +47,7 @@ function AuthProvider(props) {
 
   // Login method which saves the user token in the user's local storage
   function login(userData) {
+    console.log(userData)
     localStorage.setItem('jwtToken', userData.token);
     dispatch({
       type: 'LOGIN',

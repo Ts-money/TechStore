@@ -27,7 +27,7 @@ function Login(props) {
       props.history.push('/');
     },
     onError(err) {
-      setErrors(err.graphQLErrors[0].extensions.exception.errors);
+      setErrors(err);
     },
     variables: values
   });
@@ -63,20 +63,12 @@ function Login(props) {
           Login
         </Button>
       </Form>
-      {Object.keys(errors).length > 0 && (
-        <div className="ui error message">
-          <ul className="list">
-            {Object.values(errors).map((value) => (
-              <li key={value}>{value}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {Object.values(errors).forEach((error) => console.log(error))}
     </div>
   );
 }
 
-// GraphQL Query to login user. 
+// GraphQL Query to login user.
 const LOGIN_USER = gql`
   mutation login($username: String!, $password: String!) {
     login(username: $username, password: $password) {

@@ -35,7 +35,7 @@ function ProductCard({
             </Card.Content>
             <Card.Content extra>
                 {user && user.username === username && <DeleteButton productId={id} /> }
-                <PurchaseButton productString={name} />
+                {user && <PurchaseButton user={user} productId={id} />}
             </Card.Content>
         </Card>
     );
