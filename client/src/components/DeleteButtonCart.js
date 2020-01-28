@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import gql from 'graphql-tag';
-import { Button, Confirm, Icon } from 'semantic-ui-react';
-import { useMutation } from '@apollo/react-hooks';
-import { FETCH_PRODUCTS_QUERY } from '../util/graphql';
+import {Button, Confirm, Icon} from 'semantic-ui-react';
+import {useMutation} from '@apollo/react-hooks';
 
-import MyPopup from '../util/MyPopup';
+import CustomPopup from '../util/CustomPopup';
 
 const jwt = require('jsonwebtoken');
 
-const { SECRET_KEY } = require('../config');
+const {SECRET_KEY} = require('../config');
 
 function generateToken(id, email, username, cartItems) {
     return jwt.sign(
@@ -19,11 +18,11 @@ function generateToken(id, email, username, cartItems) {
             cartItems: cartItems
         },
         SECRET_KEY,
-        { expiresIn: '1h' }
+        {expiresIn: '1h'}
     );
 }
 
-function DeleteButtonCart({ user, productId, callback, state }) {
+function DeleteButtonCart({user, productId, callback, state}) {
 
     const [errors, setErrors] = useState({});
 
@@ -32,17 +31,15 @@ function DeleteButtonCart({ user, productId, callback, state }) {
     // Variables used to open the confirm popup.
     const [confirmOpen, setConfirmOpen] = useState(false);
 
-    const mutation = REMOVE_FROM_CART_MUTATION;
-
     async function updateToken(token) {
-        return await localStorage.setItem('jwtToken', token);
+        return localStorage.setItem('jwtToken', token);
     }
 
-    const [removeFromCartMutation] = useMutation(mutation, {
+    const [removeFromCartMutation] = useMutation(REMOVE_FROM_CART_MUTATION, {
         update(proxy) {
             console.log(proxy);
             user.cartItems = user.cartItems.filter((p) => p.id === productId);
-            var token = generateToken(user.id, user.email, user.username, user.cartItems);
+            const token = generateToken(user.id, user.email, user.username, user.cartItems);
             console.log(token);
             updateToken(token);
             window.location.reload(false);
@@ -65,16 +62,16 @@ function DeleteButtonCart({ user, productId, callback, state }) {
     // Renders purchase button
     return (
         <>
-            <MyPopup content={'Remove From Cart'}>
+            <CustomPopup content={'Remove From Cart'}>
                 <Button
                     as="div"
                     color="red"
                     floated="right"
                     onClick={() => setConfirmOpen(true)}
                 >
-                    <Icon name="trash" style={{ margin: 0 }}></Icon>
+                    <Icon name="trash" style={{margin: 0}}/>
                 </Button>
-            </MyPopup>
+            </CustomPopup>
             <Confirm
                 open={confirmOpen}
                 onCancel={() => setConfirmOpen(false)}

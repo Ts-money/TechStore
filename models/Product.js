@@ -1,5 +1,5 @@
 // Product Schema for MongoDB
-const { model, Schema } = require('mongoose');
+const {model, Schema} = require('mongoose');
 
 const productSchema = new Schema({
     name: String,

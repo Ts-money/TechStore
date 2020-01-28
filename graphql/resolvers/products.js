@@ -1,7 +1,7 @@
-const { AuthenticationError } = require('apollo-server');
+const {AuthenticationError} = require('apollo-server');
 
 const Product = require('../../models/Product');
-const checkAuth = require('../../util/check-auth');
+const checkAuth = require('../../util/authentication-verifier');
 
 const User = require('../../models/User');
 
@@ -10,14 +10,14 @@ module.exports = {
         // Gets all available products
         async getProducts() {
             try {
-                const products = await Product.find().sort({ createdAt: -1 });
+                const products = await Product.find().sort({createdAt: -1});
                 return products;
             } catch (err) {
                 throw new Error(err);
             }
         },
         // Get a specific product using its productId
-        async getProduct(_, { productId }) {
+        async getProduct(_, {productId}) {
             try {
                 const product = await Product.findById(productId);
                 if (product) {
@@ -32,7 +32,7 @@ module.exports = {
     },
     Mutation: {
         // Creates a product using name, price and image url.
-        async createProduct(_, { name, price, imageURL }, context) {
+        async createProduct(_, {name, price, imageURL}, context) {
             const user = checkAuth(context);
             if (name.trim() === '') {
                 throw new Error('Product name cannot be empty...');
@@ -53,7 +53,7 @@ module.exports = {
                 createdAt: new Date().toISOString()
             });
 
-            const product = newProduct.save();
+            const product = await newProduct.save();
 
             context.pubsub.publish('NEW_PRODUCT', {
                 newProduct: product
@@ -62,14 +62,14 @@ module.exports = {
             return product;
         },
         // Deletes a product using productId
-        async deleteProduct(_, { productId }, context) {
+        async deleteProduct(_, {productId}, context) {
             const user = checkAuth(context);
 
             try {
                 const product = await Product.findById(productId);
                 if (user.username === product.username) {
                     await product.delete();
-                    const users = await User.find().sort({ createdAt: -1 });
+                    const users = await User.find().sort({createdAt: -1});
                     users.array.forEach(user => {
                         if (user.cartItems !== undefined || user.cartItems !== null) {
                             user.cartItems = user.cartItems.filter((p) => p.id === product.id);

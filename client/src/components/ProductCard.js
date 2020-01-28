@@ -1,18 +1,18 @@
-import React, { useContext } from 'react';
-import { Card, Image } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
+import React, {useContext} from 'react';
+import {Card, Image} from 'semantic-ui-react';
+import {Link} from 'react-router-dom';
 import moment from 'moment';
 
-import { AuthContext } from '../context/auth';
-import DeleteButton from './DeleteButton';
-import PurchaseButton from './PurchaseButton';
+import {AuthenticationContext} from '../util/Authentication';
+import DeleteProductButton from './DeleteProductButton';
+import AddToCartButton from './AddToCartButton';
 
 // Product card - is used for each product on the home page to be displayed (parameter is product)
 function ProductCard({
-    product: { name, price, imageURL, createdAt, id, username }
-}) {
+                         product: {name, price, imageURL, createdAt, id, username}
+                     }) {
     // Current user logged in, if any.
-    const { user } = useContext(AuthContext);
+    const {user} = useContext(AuthenticationContext);
 
     // Renders product card.
     return (
@@ -34,8 +34,8 @@ function ProductCard({
                 </Card.Description>
             </Card.Content>
             <Card.Content extra>
-                {user && user.username === username && <DeleteButton productId={id} /> }
-                {user && <PurchaseButton user={user} productId={id} />}
+                {user && user.username === username && <DeleteProductButton productId={id}/>}
+                {user && <AddToCartButton user={user} productId={id}/>}
             </Card.Content>
         </Card>
     );

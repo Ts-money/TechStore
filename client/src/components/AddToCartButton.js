@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import gql from 'graphql-tag';
-import { Button, Confirm, Icon } from 'semantic-ui-react';
-import { useMutation } from '@apollo/react-hooks';
-import { FETCH_PRODUCTS_QUERY } from '../util/graphql';
+import {Button, Confirm, Icon} from 'semantic-ui-react';
+import {useMutation} from '@apollo/react-hooks';
+import {FETCH_PRODUCTS_QUERY} from '../util/ProductsQuery';
 
-import MyPopup from '../util/MyPopup';
+import CustomPopup from '../util/CustomPopup';
 
 const jwt = require('jsonwebtoken');
 
-const { SECRET_KEY } = require('../config');
+const {SECRET_KEY} = require('../config');
 
 function generateToken(id, email, username, cartItems) {
     return jwt.sign(
@@ -19,12 +19,12 @@ function generateToken(id, email, username, cartItems) {
             cartItems: cartItems
         },
         SECRET_KEY,
-        { expiresIn: '1h' }
+        {expiresIn: '1h'}
     );
 }
 
 // Purchase button
-function PurchaseButton({ user, productId, callback }) {
+function AddToCartButton({user, productId, callback}) {
 
     const [errors, setErrors] = useState({});
 
@@ -33,15 +33,13 @@ function PurchaseButton({ user, productId, callback }) {
     // Variables used to open the confirm popup.
     const [confirmOpen, setConfirmOpen] = useState(false);
 
-    const mutation = ADD_TO_CART_MUTATION;
-
-    const [addToCartMutation] = useMutation(mutation, {
+    const [addToCartMutation] = useMutation(ADD_TO_CART_MUTATION, {
         update(proxy) {
             const data = proxy.readQuery({
                 query: FETCH_PRODUCTS_QUERY
             });
-            proxy.writeQuery({ query: FETCH_PRODUCTS_QUERY, data });
-            var token = generateToken(user.id, user.email, user.username, user.cartItems);
+            proxy.writeQuery({query: FETCH_PRODUCTS_QUERY, data});
+            const token = generateToken(user.id, user.email, user.username, user.cartItems);
             localStorage.setItem('jwtToken', token);
             window.location.reload();
             if (callback) callback();
@@ -54,23 +52,25 @@ function PurchaseButton({ user, productId, callback }) {
 
     function addToCart() {
         setConfirmOpen(false);
-        user.cartItems.push(productId);
-        addToCartMutation();
+        if (user !== undefined && user !== null && user.cartItems !== undefined && user.cartItems !== null) {
+            user.cartItems.push(productId);
+            addToCartMutation();
+        }
     }
 
     // Renders purchase button
     return (
         <>
-            <MyPopup content={'Purchase Product'}>
+            <CustomPopup content={'Purchase Product'}>
                 <Button
                     as="div"
                     color="green"
                     floated="left"
                     onClick={() => setConfirmOpen(true)}
                 >
-                    <Icon name="cart" style={{ margin: 0 }}></Icon>
+                    <Icon name="cart" style={{margin: 0}}/>
                 </Button>
-            </MyPopup>
+            </CustomPopup>
             <Confirm
                 open={confirmOpen}
                 onCancel={() => setConfirmOpen(false)}
@@ -88,4 +88,4 @@ const ADD_TO_CART_MUTATION = gql`
     }
 `;
 
-export default PurchaseButton;
+export default AddToCartButton;

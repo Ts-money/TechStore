@@ -1,17 +1,17 @@
-import React, { useContext } from 'react';
+import React, {useContext} from 'react';
 
 import gql from 'graphql-tag';
-import { AuthContext } from '../context/auth';
-import { Image, List } from 'semantic-ui-react';
-import { useQuery } from '@apollo/react-hooks';
+import {AuthenticationContext} from '../util/Authentication';
+import {Image, List} from 'semantic-ui-react';
+import {useQuery} from '@apollo/react-hooks';
 import DeleteButtonCart from '../components/DeleteButtonCart';
 
-function Cart(props) {
-    const { user } = useContext(AuthContext);
+function CartPage() {
+    const {user} = useContext(AuthenticationContext);
 
     let render;
 
-    const state = { cartItems: [] };
+    const state = {cartItems: []};
 
     if (user !== null && user.cartItems !== undefined && user.cartItems !== null) {
         state.cartItems = [...user.cartItems];
@@ -21,7 +21,7 @@ function Cart(props) {
             <h1>Cart</h1>
             {user ? (
                 <>
-                    <br />
+                    <br/>
                     <List>
                         {console.log(user)}
                         {state.cartItems ? (state.cartItems.map((productId) => {
@@ -30,7 +30,7 @@ function Cart(props) {
                                 console.log(productId);
                                 try {
                                     const {
-                                        data: { getProduct },
+                                        data: {getProduct},
                                     } = useQuery(GET_PRODUCT_QUERY, {
                                         variables: {
                                             productId
@@ -38,10 +38,10 @@ function Cart(props) {
                                     });
                                     if (getProduct !== undefined && getProduct) {
                                         return <List.Item key={indexIncrement}>
-                                            <Image size="small" src={getProduct.imageURL} />
-                                            <br />
-                                            <DeleteButtonCart user={user} productId={productId} state={state} />
-                                            <br />
+                                            <Image size="small" src={getProduct.imageURL}/>
+                                            <br/>
+                                            <DeleteButtonCart user={user} productId={productId} state={state}/>
+                                            <br/>
                                             <List.Content>
                                                 <List.Header as='a'>{getProduct.name}</List.Header>
                                                 <List.Description>
@@ -55,20 +55,20 @@ function Cart(props) {
                                 }
                             }
                         })) : (
-                                <>
-                                    <br />
-                                    <h2>Your cart is empty!</h2>
-                                </>
-                            )}
-                        <br />
+                            <>
+                                <br/>
+                                <h2>Your cart is empty!</h2>
+                            </>
+                        )}
+                        <br/>
                     </List>
                 </>
             ) : (
-                    <>
-                        <br />
-                        <h2>You must be logged in to view your cart!</h2>
-                    </>
-                )}
+                <>
+                    <br/>
+                    <h2>You must be logged in to view your cart!</h2>
+                </>
+            )}
         </>
     );
     return render;
@@ -79,7 +79,7 @@ let indexKey = 0;
 let indexIncrement = function () {
     indexKey++;
     return indexKey - 1;
-}
+};
 
 const GET_PRODUCT_QUERY = gql`
   query($productId: ID!) {
@@ -94,4 +94,4 @@ const GET_PRODUCT_QUERY = gql`
   }
 `;
 
-export default Cart;
+export default CartPage;

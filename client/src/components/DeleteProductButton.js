@@ -1,28 +1,26 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import gql from 'graphql-tag';
-import { useMutation } from '@apollo/react-hooks';
-import { Button, Confirm, Icon } from 'semantic-ui-react';
+import {useMutation} from '@apollo/react-hooks';
+import {Button, Confirm, Icon} from 'semantic-ui-react';
 
-import { FETCH_PRODUCTS_QUERY } from '../util/graphql';
-import MyPopup from '../util/MyPopup';
+import {FETCH_PRODUCTS_QUERY} from '../util/ProductsQuery';
+import CustomPopup from '../util/CustomPopup';
 
 // Delete Button available for users who want to delete their product.
-function DeleteButton({ productId, callback }) {
+function DeleteProductButton({productId, callback}) {
 
     // Variables to open confirm popup.
     const [confirmOpen, setConfirmOpen] = useState(false);
 
-    const mutation = DELETE_PRODUCT_MUTATION;
-
     // Method to re-render the home page to display all products excluding the one deleted.
-    const [deleteProductOrMutation] = useMutation(mutation, {
+    const [deleteProductOrMutation] = useMutation(DELETE_PRODUCT_MUTATION, {
         update(proxy) {
             setConfirmOpen(false);
             const data = proxy.readQuery({
                 query: FETCH_PRODUCTS_QUERY
             });
             data.getProducts = data.getProducts.filter((p) => p.id !== productId);
-            proxy.writeQuery({ query: FETCH_PRODUCTS_QUERY, data });
+            proxy.writeQuery({query: FETCH_PRODUCTS_QUERY, data});
             if (callback) callback();
         },
         variables: {
@@ -33,16 +31,16 @@ function DeleteButton({ productId, callback }) {
     // Renders Delete Button
     return (
         <>
-            <MyPopup content={'Delete Product'}>
+            <CustomPopup content={'Delete Product'}>
                 <Button
                     as="div"
                     color="red"
                     floated="right"
                     onClick={() => setConfirmOpen(true)}
                 >
-                    <Icon name="trash" style={{ margin: 0 }} />
+                    <Icon name="trash" style={{margin: 0}}/>
                 </Button>
-            </MyPopup>
+            </CustomPopup>
             <Confirm
                 open={confirmOpen}
                 onCancel={() => setConfirmOpen(false)}
@@ -60,4 +58,4 @@ const DELETE_PRODUCT_MUTATION = gql`
     }
 `;
 
-export default DeleteButton;
+export default DeleteProductButton;

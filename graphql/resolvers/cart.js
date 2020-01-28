@@ -1,11 +1,11 @@
-const { AuthenticationError, UserInputError } = require('apollo-server');
+const {AuthenticationError, UserInputError} = require('apollo-server');
 
-const checkAuth = require('../../util/check-auth');
+const checkAuth = require('../../util/authentication-verifier');
 const User = require('../../models/User');
 
 module.exports = {
     Mutation: {
-        async addToCart(_, { userId, productId }, context) {
+        async addToCart(_, {userId, productId}, context) {
             const user = await User.findById(userId);
             const userContext = checkAuth(context);
             if (user && userContext) {
@@ -19,7 +19,7 @@ module.exports = {
                 throw new UserInputError('User not found...');
             }
         },
-        async removeFromCart(_, { userId, productId }, context) {
+        async removeFromCart(_, {userId, productId}, context) {
             const user = await User.findById(userId);
             const userContext = checkAuth(context);
             if (user && userContext) {
@@ -33,7 +33,7 @@ module.exports = {
                 throw new UserInputError('User not found...');
             }
         },
-        async clearCart(_, { userId }, context) {
+        async clearCart(_, {userId}, context) {
             const user = await User.findById(userId);
             const userContext = checkAuth(context);
             if (user && userContext) {
