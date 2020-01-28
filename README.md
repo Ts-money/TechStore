@@ -2,13 +2,17 @@
 
 ## Talib S
 
-Database and Authentication 
+Database and Authentication
+Login System (Login and Registration)
+Home Displays All Products System
+Add Your Own Product System
+You can delete your product
+Cart System (Add and Remove products)
+Database Schema (for GraphQL and Mongoose)
 
 ## Owais M 
 
 React and Front End
 
-Cart
-Reviews for products
-API Routes
-Polish the front end (Change Colors, design etc.)
+Front End Work
+Skrill Payment System Link With Cart

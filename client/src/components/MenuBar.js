@@ -11,7 +11,7 @@ function MenuBar() {
 
   const path = pathname === '/' ? 'home' : pathname.substr(1);
   const [activeItem, setActiveItem] = useState(path);
-
+  
   const handleItemClick = (e, { name }) => setActiveItem(name);
 
   // Renders the menu bar and saves it a variable
@@ -21,7 +21,7 @@ function MenuBar() {
 
       <Menu.Menu position="right">
       <Menu.Item
-          name="cart"
+          name={user.cartItems !== undefined ? user.cartItems !== null ? user.cartItems.length < 1 ? "Cart (Empty)" : user.cartItems.length > 1 ? "Cart (" + user.cartItems.length + " Items)" : "Cart (" + user.cartItems.length + " Item)" : "Cart" : "Cart" }
           onClick={handleItemClick}
           as={Link}
           to="/cart"

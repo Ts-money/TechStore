@@ -43,6 +43,7 @@ function PurchaseButton({ user, productId, callback }) {
             proxy.writeQuery({ query: FETCH_PRODUCTS_QUERY, data });
             var token = generateToken(user.id, user.email, user.username, user.cartItems);
             localStorage.setItem('jwtToken', token);
+            window.location.reload();
             if (callback) callback();
         },
         variables: {
