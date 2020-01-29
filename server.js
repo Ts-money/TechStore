@@ -13,26 +13,25 @@ const resolvers = require('./graphql/resolvers');
 const pubsub = new PubSub();
 
 // Define middleware here
-app.use(express.urlencoded({extended: true}));
-app.use(express.json());
+//app.use(express.urlencoded({extended: true}));
+//app.use(express.json());
 // Serve up static assets (usually on heroku)
-if (process.env.NODE_ENV === "production") {
+/*if (process.env.NODE_ENV === "production") {
     app.use(express.static("client/build"));
-}
+}*/
 
 // Define API routes here
-require('./routes/apiRoutes')(app);
-
+//require('./routes/apiRoutes')(app);
 // Send every other request to the React app
 // Define any API routes before this runs
-app.get("*", (req, res) => {
+/*app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "./client/build/index.html"));
-});
+});*/
 
 // Starts Express Web Server
-app.listen(PORT, () => {
+/*app.listen(PORT, () => {
     console.log(`🌎 ==> API server now on port ${PORT}!`);
-});
+});*/
 
 // Apollo Server Constructor
 const server = new ApolloServer({
@@ -43,10 +42,10 @@ const server = new ApolloServer({
 
 // Connects to MongoDB and then starts Apollo Server
 mongoose
-    .connect("mongodb://heroku_qd1s2dl8:9tokrjnq2uemhmhtrkr9b4qk7p@ds161487.mlab.com:61487/heroku_qd1s2dl8", {useNewUrlParser: true})
+    .connect(process.env.MONGODB_URI || 'mongodb://localhost/techstore', {useNewUrlParser: true})
     .then(() => {
         console.log('MongoDB Connected');
-        return server.listen({port: PORT_APOLLO});
+        return server.listen({port: PORT});
     })
     .then((res) => {
         console.log(`GraphQL Server running at ${res.url}`);
